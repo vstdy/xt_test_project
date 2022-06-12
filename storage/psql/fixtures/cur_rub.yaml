@@ -1,0 +1,76 @@
+- model: CurRub
+  rows:
+    - _id: curRub_1
+      id: '{{ uuid }}'
+      date: '{{ yesterday }}'
+      aud: 411437
+      azn: 339871
+      gbp: 724536
+      amd: 136931
+      byn: 225581
+      bgn: 317357
+      brl: 118040
+      huf: 154054
+      hkd: 737435
+      dkk: 834388
+      usd: 577780
+      eur: 609656
+      inr: 744568
+      kzt: 132973
+      cad: 456960
+      kgs: 726755
+      cny: 889792
+      mdl: 303499
+      nok: 609627
+      pln: 132753
+      ron: 123814
+      xdr: 777911
+      sgd: 418378
+      tjs: 511310
+      try: 335645
+      tmt: 165080
+      uzs: 524245
+      uah: 195674
+      czk: 251373
+      sek: 583764
+      chf: 590174
+      zar: 373233
+      krw: 455339
+      jpy: 430537
+    - _id: curRub_2
+      id: '{{ uuid }}'
+      date: '{{ now }}'
+      aud: 421437
+      azn: 349871
+      gbp: 734536
+      amd: 146931
+      byn: 235581
+      bgn: 327357
+      brl: 128040
+      huf: 164054
+      hkd: 747435
+      dkk: 844388
+      usd: 587780
+      eur: 619656
+      inr: 754568
+      kzt: 142973
+      cad: 466960
+      kgs: 736755
+      cny: 899792
+      mdl: 313499
+      nok: 619627
+      pln: 142753
+      ron: 133814
+      xdr: 787911
+      sgd: 428378
+      tjs: 521310
+      try: 345645
+      tmt: 175080
+      uzs: 534245
+      uah: 205674
+      czk: 261373
+      sek: 593764
+      chf: 600174
+      zar: 383233
+      krw: 465339
+      jpy: 440537

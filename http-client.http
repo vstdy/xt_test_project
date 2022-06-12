@@ -1,0 +1,44 @@
+### 1. Get latest BTC-USDT rate
+GET {{server_address}}/api/btcusdt
+
+### 2. Get BTC-USDT rate history
+POST {{server_address}}/api/btcusdt
+Content-Type: application/json; charset=UTF-8
+
+//{ todo
+//  "since": "",
+//  "till": "",
+//  "page_number": 1,
+//  "page_size": 10
+//}
+
+
+### 3. Get latest currencies to RUB rates
+GET {{server_address}}/api/currencies
+
+### 4. Get currencies to RUB rates history
+POST {{server_address}}/api/currencies
+Content-Type: application/json; charset=UTF-8
+
+//{ todo
+//  "since": "",
+//  "till": "",
+//  "currency": "",
+//  "page_number": 1,
+//  "page_size": 10
+//}
+
+
+### 5. Get latest currencies to BTC rates
+GET {{server_address}}/api/latest
+
+### 6. Get currencies to BTC rates history
+POST {{server_address}}/api/latest
+Content-Type: application/json; charset=UTF-8
+
+//{ todo
+//  "since": "",
+//  "till": "",
+//  "page_number": 1,
+//  "page_size": 10
+//}

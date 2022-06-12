@@ -1,0 +1,14 @@
+# App config example.
+
+# PostgreSQL storage configuration
+# Connection URL
+database_dsn = "postgres://user:password@localhost:5432/exchange?sslmode=disable"
+
+# Request timeout
+timeout = "5s"
+
+# Server address
+server_address = "0.0.0.0:8080"
+
+# Storage type
+storage_type = "psql"

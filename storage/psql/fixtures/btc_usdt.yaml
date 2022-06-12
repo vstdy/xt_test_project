@@ -1,0 +1,12 @@
+- model: BtcUsdt
+  rows:
+    - _id: btcUsdt_1
+      id: '{{ uuid }}'
+      buy: 2750000
+      sell: 2750010
+      timestamp: '{{ yesterday }}'
+    - _id: btcUsdt_2
+      id: '{{ uuid }}'
+      buy: 2750050
+      sell: 2750060
+      timestamp: '{{ now }}'
