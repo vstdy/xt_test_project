@@ -9,6 +9,7 @@ import (
 
 	canonical "github.com/vstdy/xt_test_project/model"
 	"github.com/vstdy/xt_test_project/pkg"
+	"github.com/vstdy/xt_test_project/pkg/input"
 	"github.com/vstdy/xt_test_project/storage/psql/schema"
 )
 
@@ -53,15 +54,23 @@ func (st *Storage) CurRubRatesLatest(ctx context.Context) (canonical.CurRub, err
 }
 
 // CurRubRatesHistory returns currencies to RUB rates history.
-func (st *Storage) CurRubRatesHistory(ctx context.Context) (int, []canonical.CurRub, error) {
+func (st *Storage) CurRubRatesHistory(
+	ctx context.Context,
+	pageParams input.PageParams,
+	dateTimeParams input.DateTimeParams,
+	cur string,
+) (int, []canonical.CurRub, error) {
 	var dbObjs schema.CurRubs
 
-	count, err := st.DB.NewSelect().
+	q := st.DB.NewSelect().
 		Model(&dbObjs).
-		Order("date DESC").
-		Limit(10).
-		Offset(0).
-		ScanAndCount(ctx)
+		Order("date DESC")
+
+	columnFilterQuery(q, cur, "date")
+	dateTimeFilterQuery(q, "date", dateTimeParams)
+	paginateQuery(q, pageParams)
+
+	count, err := q.ScanAndCount(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, nil, pkg.ErrNoValue

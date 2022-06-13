@@ -10,6 +10,7 @@ import (
 
 	canonical "github.com/vstdy/xt_test_project/model"
 	"github.com/vstdy/xt_test_project/pkg"
+	"github.com/vstdy/xt_test_project/pkg/input"
 )
 
 // BtcUsdtRateLatest gets latest BTC-USDT rate.
@@ -23,8 +24,21 @@ func (svc *Service) BtcUsdtRateLatest(ctx context.Context) (canonical.BtcUsdt, e
 }
 
 // BtcUsdtRateHistory gets BTC-USDT rate history.
-func (svc *Service) BtcUsdtRateHistory(ctx context.Context) (int, []canonical.BtcUsdt, error) {
-	total, history, err := svc.storage.BtcUsdtRateHistory(ctx)
+func (svc *Service) BtcUsdtRateHistory(
+	ctx context.Context,
+	pNum, pSize int,
+	since, till string,
+) (int, []canonical.BtcUsdt, error) {
+	pp, err := input.NewPageParams(pNum, pSize)
+	if err != nil {
+		return 0, nil, err
+	}
+	dt, err := input.NewDateTimeParams(since, till, input.Datetime)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	total, history, err := svc.storage.BtcUsdtRateHistory(ctx, pp, dt)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -63,20 +77,20 @@ func (svc *Service) btcUsdtRateUpdater(ctx context.Context) {
 	}
 
 	update := func() error {
-		btcUstdRate, err := svc.currencyRateProvider.BtcUsdtRate()
+		btcUsdtRate, err := svc.currencyRateProvider.BtcUsdtRate()
 		if err != nil {
 			return fmt.Errorf("currencyRateProvider: %w", err)
 		}
 
-		btcUsdtRate, err := btcUsdtRateLatest()
+		btcUsdtRateSaved, err := btcUsdtRateLatest()
 		if err != nil && !errors.Is(err, pkg.ErrNoValue) {
 			return fmt.Errorf("get latest BTC-USDT rate: %w", err)
 		}
 
-		if btcUstdRate.Buy != btcUsdtRate.Buy ||
-			btcUstdRate.Sell != btcUsdtRate.Sell ||
+		if btcUsdtRate.Buy != btcUsdtRateSaved.Buy ||
+			btcUsdtRate.Sell != btcUsdtRateSaved.Sell ||
 			errors.Is(err, pkg.ErrNoValue) {
-			if err = addBtcUsdtRate(btcUstdRate); err != nil {
+			if err = addBtcUsdtRate(btcUsdtRate); err != nil {
 				return fmt.Errorf("add BTC-USDT rate: %w", err)
 			}
 

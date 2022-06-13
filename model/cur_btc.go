@@ -1,10 +1,14 @@
 package model
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+const RUB string = "rub"
 
 // CurBtc keeps currencies to BTC rates data.
 type CurBtc struct {
@@ -88,5 +92,17 @@ func NewCurBtc(curRub CurRub, btcUsdt BtcUsdt) CurBtc {
 		ZAR:       btcRub / curRub.ZAR,
 		KRW:       btcRub / curRub.KRW,
 		JPY:       btcRub / curRub.JPY,
+	}
+}
+
+// ValidateCurBtc performs currencies validation.
+func ValidateCurBtc(cur string) error {
+	switch strings.ToLower(cur) {
+	case RUB, AUD, AZN, GBP, AMD, BYN, BGN, BRL, HUF, HKD, DKK, USD, EUR,
+		INR, KZT, CAD, KGS, CNY, MDL, NOK, PLN, RON, XDR, SGD, TJS,
+		TRY, TMT, UZS, UAH, CZK, SEK, CHF, ZAR, KRW, JPY:
+		return nil
+	default:
+		return fmt.Errorf("unknown currency: %s", cur)
 	}
 }

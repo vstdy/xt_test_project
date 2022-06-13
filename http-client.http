@@ -5,12 +5,12 @@ GET {{server_address}}/api/btcusdt
 POST {{server_address}}/api/btcusdt
 Content-Type: application/json; charset=UTF-8
 
-//{ todo
-//  "since": "",
-//  "till": "",
-//  "page_number": 1,
-//  "page_size": 10
-//}
+{
+  "since": "2022-06-11 12:00:00",
+  "till": "2022-06-13 23:59:59",
+  "page_number": 1,
+  "page_size": 5
+}
 
 
 ### 3. Get latest currencies to RUB rates
@@ -20,13 +20,13 @@ GET {{server_address}}/api/currencies
 POST {{server_address}}/api/currencies
 Content-Type: application/json; charset=UTF-8
 
-//{ todo
-//  "since": "",
-//  "till": "",
-//  "currency": "",
-//  "page_number": 1,
-//  "page_size": 10
-//}
+{
+  "since": "2022-06-11",
+  "till": "2022-06-12",
+  "currency": "JPY",
+  "page_number": 1,
+  "page_size": 5
+}
 
 
 ### 5. Get latest currencies to BTC rates
@@ -36,9 +36,10 @@ GET {{server_address}}/api/latest
 POST {{server_address}}/api/latest
 Content-Type: application/json; charset=UTF-8
 
-//{ todo
-//  "since": "",
-//  "till": "",
-//  "page_number": 1,
-//  "page_size": 10
-//}
+{
+  "since": "2022-06-11 12:00:00",
+  "till": "2022-06-13 23:59:59",
+  "currency": "RUB",
+  "page_number": 1,
+  "page_size": 5
+}

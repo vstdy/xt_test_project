@@ -15,7 +15,7 @@ services:
     build:
       context: ..
       dockerfile: build/Dockerfile
-    restart: "no"
+    restart: "always"
     depends_on:
       - postgres
     environment:

@@ -60,6 +60,7 @@ func (cb CurBtc) ToCanonical() canonical.CurBtc {
 	return canonical.CurBtc{
 		ID:        cb.ID,
 		Timestamp: cb.Timestamp,
+		RUB:       float32(cb.RUB) / 1000,
 		AUD:       float32(cb.AUD) / 1000,
 		AZN:       float32(cb.AZN) / 1000,
 		GBP:       float32(cb.GBP) / 1000,

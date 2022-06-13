@@ -13,6 +13,15 @@ type BtcUsdtLatestResponse struct {
 	Buy       float32   `json:"sell"`
 }
 
+// NewBtcUsdtLatestResponseFromCanonical creates a new BtcUsdtLatestResponse object from canonical model.
+func NewBtcUsdtLatestResponseFromCanonical(obj canonical.BtcUsdt) BtcUsdtLatestResponse {
+	return BtcUsdtLatestResponse{
+		Timestamp: obj.Timestamp,
+		Buy:       obj.Buy,
+		Sell:      obj.Sell,
+	}
+}
+
 // MarshalJSON implements interface json.Marshaler.
 func (bu BtcUsdtLatestResponse) MarshalJSON() ([]byte, error) {
 	type BtcUsdtLatestResponseAlias BtcUsdtLatestResponse
@@ -28,13 +37,9 @@ func (bu BtcUsdtLatestResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(btcUsdtLatestResponse)
 }
 
-// NewBtcUsdtLatestResponseFromCanonical creates a new BtcUsdtLatestResponse object from canonical model.
-func NewBtcUsdtLatestResponseFromCanonical(obj canonical.BtcUsdt) BtcUsdtLatestResponse {
-	return BtcUsdtLatestResponse{
-		Timestamp: obj.Timestamp,
-		Buy:       obj.Buy,
-		Sell:      obj.Sell,
-	}
+type BtcUsdtHistoryRequest struct {
+	Pagination
+	DateTimeFilter
 }
 
 type BtcUsdtHistoryResponse struct {

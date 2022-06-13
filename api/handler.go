@@ -3,11 +3,12 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 
-	canonical "github.com/vstdy/xt_test_project/api/model"
+	"github.com/vstdy/xt_test_project/api/model"
 	"github.com/vstdy/xt_test_project/pkg"
 	"github.com/vstdy/xt_test_project/service/exchange"
 )
@@ -22,7 +23,7 @@ func NewHandler(service exchange.Service) Handler {
 	return Handler{service: service}
 }
 
-// btcUsdtLatest returns latest BTC-USDT rate.
+// btcUsdtLatest returns the latest BTC-USDT rate.
 func (h Handler) btcUsdtLatest(w http.ResponseWriter, r *http.Request) {
 	obj, err := h.service.BtcUsdtRateLatest(r.Context())
 	if err != nil {
@@ -35,7 +36,7 @@ func (h Handler) btcUsdtLatest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respObj := canonical.NewBtcUsdtLatestResponseFromCanonical(obj)
+	respObj := model.NewBtcUsdtLatestResponseFromCanonical(obj)
 
 	resp, err := json.Marshal(respObj)
 	if err != nil {
@@ -52,7 +53,16 @@ func (h Handler) btcUsdtLatest(w http.ResponseWriter, r *http.Request) {
 
 // btcUsdtHistory returns BTC-USDT rate history.
 func (h Handler) btcUsdtHistory(w http.ResponseWriter, r *http.Request) {
-	count, objs, err := h.service.BtcUsdtRateHistory(r.Context())
+	var req model.BtcUsdtHistoryRequest
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil && !errors.Is(err, io.EOF) {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	count, objs, err := h.service.BtcUsdtRateHistory(
+		r.Context(), req.PageNumber, req.PageSize, req.Since, req.Till)
 	if err != nil {
 		if errors.Is(err, pkg.ErrNoValue) {
 			w.WriteHeader(http.StatusNoContent)
@@ -63,7 +73,7 @@ func (h Handler) btcUsdtHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respObjs := canonical.NewBtcUsdtHistoryResponseFromCanonical(count, objs)
+	respObjs := model.NewBtcUsdtHistoryResponseFromCanonical(count, objs)
 
 	resp, err := json.Marshal(respObjs)
 	if err != nil {
@@ -91,7 +101,7 @@ func (h Handler) curRubLatest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respObj := canonical.NewCurRubLatestResponseFromCanonical(obj)
+	respObj := model.NewCurRubLatestResponseFromCanonical(obj)
 
 	resp, err := json.Marshal(respObj)
 	if err != nil {
@@ -108,7 +118,16 @@ func (h Handler) curRubLatest(w http.ResponseWriter, r *http.Request) {
 
 // curRubHistory returns currencies to RUB rates history.
 func (h Handler) curRubHistory(w http.ResponseWriter, r *http.Request) {
-	count, objs, err := h.service.CurRubRatesHistory(r.Context())
+	var req model.CurRubHistoryRequest
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil && !errors.Is(err, io.EOF) {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	count, objs, err := h.service.CurRubRatesHistory(
+		r.Context(), req.PageNumber, req.PageSize, req.Since, req.Till, req.Currency)
 	if err != nil {
 		if errors.Is(err, pkg.ErrNoValue) {
 			w.WriteHeader(http.StatusNoContent)
@@ -119,7 +138,7 @@ func (h Handler) curRubHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respObjs := canonical.NewCurRubHistoryResponseFromCanonical(count, objs)
+	respObjs := model.NewCurRubHistoryResponseFromCanonical(count, objs)
 
 	resp, err := json.Marshal(respObjs)
 	if err != nil {
@@ -147,7 +166,7 @@ func (h Handler) curBtcLatest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respObj := canonical.NewCurBtcLatestResponseFromCanonical(obj)
+	respObj := model.NewCurBtcLatestResponseFromCanonical(obj)
 
 	resp, err := json.Marshal(respObj)
 	if err != nil {
@@ -164,7 +183,16 @@ func (h Handler) curBtcLatest(w http.ResponseWriter, r *http.Request) {
 
 // curBtcHistory returns currencies to RUB rates history.
 func (h Handler) curBtcHistory(w http.ResponseWriter, r *http.Request) {
-	count, objs, err := h.service.CurBtcRatesHistory(r.Context())
+	var req model.CurBtcHistoryRequest
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil && !errors.Is(err, io.EOF) {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	count, objs, err := h.service.CurBtcRatesHistory(
+		r.Context(), req.PageNumber, req.PageSize, req.Since, req.Till, req.Currency)
 	if err != nil {
 		if errors.Is(err, pkg.ErrNoValue) {
 			w.WriteHeader(http.StatusNoContent)
@@ -175,7 +203,7 @@ func (h Handler) curBtcHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respObjs := canonical.NewCurBtcHistoryResponseFromCanonical(count, objs)
+	respObjs := model.NewCurBtcHistoryResponseFromCanonical(count, objs)
 
 	resp, err := json.Marshal(respObjs)
 	if err != nil {

@@ -9,6 +9,7 @@ import (
 
 	canonical "github.com/vstdy/xt_test_project/model"
 	"github.com/vstdy/xt_test_project/pkg"
+	"github.com/vstdy/xt_test_project/pkg/input"
 	"github.com/vstdy/xt_test_project/storage/psql/schema"
 )
 
@@ -52,15 +53,21 @@ func (st *Storage) BtcUsdtRateLatest(ctx context.Context) (canonical.BtcUsdt, er
 }
 
 // BtcUsdtRateHistory returns BTC-USDT rate history.
-func (st *Storage) BtcUsdtRateHistory(ctx context.Context) (int, []canonical.BtcUsdt, error) {
+func (st *Storage) BtcUsdtRateHistory(
+	ctx context.Context,
+	pageParams input.PageParams,
+	dateTimeParams input.DateTimeParams,
+) (int, []canonical.BtcUsdt, error) {
 	var dbObjs schema.BtcUsdts
 
-	count, err := st.DB.NewSelect().
+	q := st.DB.NewSelect().
 		Model(&dbObjs).
-		Order("timestamp DESC").
-		Limit(10).
-		Offset(0).
-		ScanAndCount(ctx)
+		Order("timestamp DESC")
+
+	dateTimeFilterQuery(q, "timestamp", dateTimeParams)
+	paginateQuery(q, pageParams)
+
+	count, err := q.ScanAndCount(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, nil, pkg.ErrNoValue

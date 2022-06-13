@@ -8,6 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	canonical "github.com/vstdy/xt_test_project/model"
+	"github.com/vstdy/xt_test_project/pkg/input"
 )
 
 // CurRubRatesLatest gets latest currencies to RUB rate.
@@ -21,8 +22,26 @@ func (svc *Service) CurRubRatesLatest(ctx context.Context) (canonical.CurRub, er
 }
 
 // CurRubRatesHistory gets currencies to RUB rates history.
-func (svc *Service) CurRubRatesHistory(ctx context.Context) (int, []canonical.CurRub, error) {
-	total, history, err := svc.storage.CurRubRatesHistory(ctx)
+func (svc *Service) CurRubRatesHistory(
+	ctx context.Context,
+	pNum, pSize int,
+	since, till, cur string,
+) (int, []canonical.CurRub, error) {
+	pp, err := input.NewPageParams(pNum, pSize)
+	if err != nil {
+		return 0, nil, err
+	}
+	dt, err := input.NewDateTimeParams(since, till, input.Date)
+	if err != nil {
+		return 0, nil, err
+	}
+	if cur != "" {
+		if err = canonical.ValidateCurRub(cur); err != nil {
+			return 0, nil, err
+		}
+	}
+
+	total, history, err := svc.storage.CurRubRatesHistory(ctx, pp, dt, cur)
 	if err != nil {
 		return 0, nil, err
 	}

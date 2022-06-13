@@ -9,6 +9,7 @@ import (
 
 	canonical "github.com/vstdy/xt_test_project/model"
 	"github.com/vstdy/xt_test_project/pkg"
+	"github.com/vstdy/xt_test_project/pkg/input"
 	"github.com/vstdy/xt_test_project/storage/psql/schema"
 )
 
@@ -52,15 +53,23 @@ func (st *Storage) CurBtcRatesLatest(ctx context.Context) (canonical.CurBtc, err
 }
 
 // CurBtcRatesHistory returns currencies to BTC rates history.
-func (st *Storage) CurBtcRatesHistory(ctx context.Context) (int, []canonical.CurBtc, error) {
+func (st *Storage) CurBtcRatesHistory(
+	ctx context.Context,
+	pageParams input.PageParams,
+	dateTimeParams input.DateTimeParams,
+	cur string,
+) (int, []canonical.CurBtc, error) {
 	var dbObjs schema.CurBtcs
 
-	count, err := st.DB.NewSelect().
+	q := st.DB.NewSelect().
 		Model(&dbObjs).
-		Order("timestamp DESC").
-		Limit(10).
-		Offset(0).
-		ScanAndCount(ctx)
+		Order("timestamp DESC")
+
+	columnFilterQuery(q, cur, "timestamp")
+	dateTimeFilterQuery(q, "timestamp", dateTimeParams)
+	paginateQuery(q, pageParams)
+
+	count, err := q.ScanAndCount(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, nil, pkg.ErrNoValue
